@@ -2,8 +2,9 @@ Route
 ===
 
 Route is a simple and lightweight routing plugin that allows you to quickly use controllers and views without all
-of the extra bulk from MVC frameworks. Better suited to front end websites with very little database interaction,
-route is simple to set up and easy to use.
+of the extra bulk from MVC frameworks.
+It means that you can have nice looking URLs like '/news/7' instead of nasty looking ones like '/news.php?id=7' without all of the extra bulk or learning curve of mainstream MVCs.
+Better suited to front end websites with very little database interaction, route is simple to set up and easy to use.
 
 Getting Started
 ====
