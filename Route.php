@@ -52,8 +52,17 @@ class Route
         //Get the name of the controller function to be called
         $function = $this->_getFunction($url);
 
+        //If $function is array, store the correct data
+        if (is_array($function)) {
+            $params[] = $function['param'];
+            $function = $function['function'];
+        }
+
         //Get all of the parameters passed in the URL
-        $params = [];
+        //Create $params if it doesn't already exist
+        if (empty($params)) {
+            $params = [];
+        }
         $size = sizeof($url);
         for ($i = 3; $i < $size; $i++) {
             $params[] = $url[$i];
@@ -90,15 +99,21 @@ class Route
         $function = $this->_function;
 
         //Run the required function in the controller
-        $data = $controller::$function();
+        $data = $controller::$function($this->_params);
 
         return $data;
     }
 
-    public function loadTemplate($params)
+    public function loadTemplate($params = [])
     {
+        //Check to see if params is null before using it
+        if (is_null($params)) {
+            $params = [];
+        }
+
         //Populate all variables for use in template
         extract($params);
+
         //Load the template file
         require_once __DIR__ . '/Templates/' . strtolower($this->_controller) . '/' . strtolower($this->_function) . '.php';
 
@@ -129,7 +144,16 @@ class Route
      */
     private function _getFunction($url)
     {
-        return (empty($url[2]) ? 'index' : $url[2]);
+        //Check to see if the second part of the URL is a number, if it is, make the function 'index' and the first
+        //param the number
+        if (!empty($url[2]) && is_numeric($url[2])) {
+            return [
+                'function' => 'index',
+                'param' => $url[2]
+            ];
+        } else {
+            return (empty($url[2]) ? 'index' : $url[2]);
+        }
     }
 
     private function _checkControllerExists($controller)

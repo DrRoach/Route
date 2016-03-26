@@ -32,5 +32,14 @@ class splitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Friends', $data['controller']);
         $this->assertEquals('add', $data['function']);
         $this->assertEquals('billy123', $data['params'][0]);
+
+        $url = '/news/15';
+        $route = new \route\Route($url);
+
+        $data = $route->split();
+
+        $this->assertEquals('News', $data['controller']);
+        $this->assertEquals('index', $data['function']);
+        $this->assertEquals('15', $data['params'][0]);
     }
 }
