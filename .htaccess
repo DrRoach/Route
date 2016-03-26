@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule (.*\.(css|js)) $1 [L]
+    RewriteRule ^$ Bootstrap.php [L]
+    RewriteRule (.*) Bootstrap.php [L]
+</IfModule>
