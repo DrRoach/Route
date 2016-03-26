@@ -12,8 +12,8 @@ Getting Started
 2. Create your controller. The controller loaded is the first part of the URL. For example, in
  'www.yoursite.com/news/15', the controller looked for will be 'NewsController.php'.
 3. Create your function. The function loaded is the second part of the URL. For example, in
- 'www.yoursite.com/friends/add/barry', the function loaded will be 'add()'. However, if the second part of the
- URL is a number, like 4, the function loaded is 'index()'.
+ 'www.yoursite.com/friends/add/barry', the function loaded will be `add()`. However, if the second part of the
+ URL is a number, like 4, the function loaded is `index()`.
 4. Create your template. Each controller must have it's own folder of templates. Each named after their parent
  method in the Controller. For example, if you called 'www.yoursite.com/friends/add', the template loaded will be
  'Templates/friends/add.php'.
@@ -22,14 +22,14 @@ Using controller variables is views
 ====
 
 It's easy to pass data from your controller to your view. Just return the data from your controller as an array.
- The easiest way to do this is using the 'compact()' method. Say you had a variable called '$data'. To pass it to
- the view, just call 'return compact(\'data\');'.
+ The easiest way to do this is using the `compact()` method. Say you had a variable called `$data`. To pass it to
+ the view, just call `return compact('data');`.
 
 Defaults
 ====
 
 At the moment, there are only two default settings in this project. The first is that the 'HomeController' is always
- the default controller. The second is that the default method to be called is 'index()'.
+ the default controller. The second is that the default method to be called is `index()`.
 
 In the future, I am aiming to make the system fully dynamic so that there are no defaults at all or at least a setting
  file.
