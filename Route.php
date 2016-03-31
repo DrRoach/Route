@@ -39,7 +39,7 @@ class Route
      * Split the URL into a controller, function to be ran from that
      * controller and all parameters to be passed onto that function
      *
-     * @return null
+     * @return array
      */
     public function split()
     {
@@ -74,6 +74,64 @@ class Route
         $this->_params = $params;
 
         return compact('controller', 'function', 'params');
+    }
+
+    public function checkCustomRouting()
+    {
+        //Get array of custom routes
+        $customRoutes = CustomRoutes::all();
+
+        $page = $this->_removeTrailingSlash($this->_page);
+        foreach ($customRoutes as $url => $route) {
+            $url = $this->_removeTrailingSlash($url);
+
+            if (strtolower($page) == strtolower($url)) {
+                //Apply custom routing
+                $customRoute = $this->_extractCustomRoutes($route);
+                $this->_controller = $customRoute['controller'];
+                $this->_function = $customRoute['function'];
+            }
+        }
+    }
+
+    /**
+     * Remove trailing slashes from URL.
+     *
+     * Remove any trailing slashes from $url. We make sure that $url is bigger than 1
+     * so that '/' doesn't turn into ''.
+     *
+     * @param $url
+     *
+     * @return String
+     */
+    private function _removeTrailingSlash($url)
+    {
+        if (substr($url, -1) == '/' && strlen($url) > 1) {
+            $url = substr($url, 0, strlen($url) - 1);
+        }
+
+        return $url;
+    }
+
+    private function _extractCustomRoutes($route)
+    {
+        //Regex to grab the controller and function from the custom routing
+        preg_match('/(?<controller>.*)Controller::(?<function>.*)\(\)/', $route, $match);
+
+        //Check to make sure a controller was found
+        if (empty($match['controller'])) {
+            throw new \Exception('No controller could be found in your routing.');
+        }
+
+        if (empty($match['function'])) {
+            throw new \Exception('No function could be found in your routing.');
+        }
+
+        //Return custom routing
+        return [
+            'controller' => $match['controller'],
+            'function' => $match['function']
+        ];
     }
 
     public function checkFilesExist()
@@ -130,7 +188,7 @@ class Route
      */
     private function _getController($url)
     {
-        (empty($url[1]) ? $controller = 'home' : $controller = $url[1]);
+        empty($url[1]) ? $controller = '' : $controller = $url[1];
         return ucfirst(strtolower($controller));
     }
 
