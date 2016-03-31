@@ -137,14 +137,33 @@ class Route
     public function checkFilesExist()
     {
         if (!$this->_checkControllerExists($this->_controller)) {
-            throw new \Exception('The controller ' . $this->_controller . ' could not be found.');
+            if ($this->_404Exists()) {
+                $this->_load404();
+            } else {
+                throw new \Exception('The controller ' . $this->_controller . ' could not be found.');
+            }
         }
 
         if (!$this->_checkTemplateExists($this->_controller, $this->_function)) {
-            throw new \Exception('The template ' . $this->_controller . '/' . $this->_function . ' could not be found.');
+            if ($this->_404Exists()) {
+                $this->_load404();
+            } else {
+                throw new \Exception('The template ' . $this->_controller . '/' . $this->_function . ' could not be found.');
+            }
         }
 
         return true;
+    }
+
+    private function _404Exists()
+    {
+        return file_exists('404.php');
+    }
+
+    private function _load404()
+    {
+        require_once '404.php';
+        exit;
     }
 
     public function loadController()
