@@ -42,7 +42,6 @@ Future Updates
 
 - [ ] Easy database integration.
 - [ ] More choice over views loaded.
-- [ ] Improved routing so dev can set '/enemies' to load 'FriendsController' for example.
 
 **Other suggestions are much appreciated!**
 
