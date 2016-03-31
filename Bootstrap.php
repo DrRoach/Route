@@ -12,6 +12,8 @@ $page = $_SERVER['REQUEST_URI'];
 
 //Require the Route file
 require_once 'Route.php';
+//Require the CustomRoutes file
+require_once 'CustomRoutes.php';
 
 //Create the new Route object
 $route = new \route\Route($page);
@@ -20,6 +22,8 @@ $route = new \route\Route($page);
 $route->dirCheck();
 //Split the URL into controller and template
 $route->split();
+//Check to see if any custom routing has been setup
+$route->checkCustomRouting();
 //Make sure that the controller and method exist
 $route->checkFilesExist();
 //Load the controller
