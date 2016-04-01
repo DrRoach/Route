@@ -12,6 +12,10 @@ class CustomRoutes
          * loaded. Notice how you write it the same way you would a static function call.
          * Example:
          * '/friends/delete' => 'EnemiesController::add()'
+         *
+         * You can also perform advanced routing using regular expressions. For example, if you
+         * want run() to be your default function instead of index(), you can set it up like so:
+         * '/(.*)'
          */
         return [
             '/' => 'HomeController::index()'

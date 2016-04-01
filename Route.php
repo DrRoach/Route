@@ -85,11 +85,29 @@ class Route
         foreach ($customRoutes as $url => $route) {
             $url = $this->_removeTrailingSlash($url);
 
+            //Don't do any advanced routing if the URL in the CustomRoutes file is '/'
+            if ($url != '/') {
+                //Perform regex given in custom routing
+                preg_match('[' . $url . ']i', $page, $advancedRoute);
+
+                //If a match was found in the regex, set the URL to it
+                if (!empty($advancedRoute[0])) {
+                    //Store the custom URL to be checked against the loaded URL
+                    $url = $advancedRoute[0];
+                    //Store any selected data from advanced regex
+                    $advancedUrl = !empty($advancedRoute[1]) ? $advancedRoute[1] : '';
+                }
+            }
+
             if (strtolower($page) == strtolower($url)) {
                 //Apply custom routing
-                $customRoute = $this->_extractCustomRoutes($route);
+                $customRoute = $this->_extractCustomRoutes($route, (!empty($advancedUrl) ? $advancedUrl : ''));
+
                 $this->_controller = $customRoute['controller'];
                 $this->_function = $customRoute['function'];
+
+                //Don't check any more routes as desired route has been found
+                break;
             }
         }
     }
@@ -113,7 +131,7 @@ class Route
         return $url;
     }
 
-    private function _extractCustomRoutes($route)
+    private function _extractCustomRoutes($route, $url = '')
     {
         //Regex to grab the controller and function from the custom routing
         preg_match('/(?<controller>.*)Controller::(?<function>.*)\(\)/', $route, $match);
@@ -125,6 +143,22 @@ class Route
 
         if (empty($match['function'])) {
             throw new \Exception('No function could be found in your routing.');
+        }
+
+        //Perform regex to see if any advanced routing was used on the controller
+        preg_match('/\$(?<section>[0-9])+/', $match['controller'], $advancedRoute);
+
+        //If advanced routing was used, make sure that any required data was stored
+        if (!empty($advancedRoute[0])) {
+            $match['controller'] = $url;
+        }
+
+        //Perform regex to see if any advanced routing was used on the function
+        preg_match('/\$(?<section>[0-9])+/', $match['function'], $advancedRoute);
+
+        //If advanced routing was used, make sure that any required data was stored
+        if (!empty($advancedRoute[0])) {
+            $match['function'] = $url;
         }
 
         //Return custom routing
